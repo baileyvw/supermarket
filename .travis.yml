@@ -9,7 +9,8 @@ cache:
   bundler: true
   directories:
     - $HOME/tools
-    - "$TRAVIS_BUILD_DIR/src/$COMPONENT/vendor/bundle"
+    - src/supermarket/vendor/bundle
+    - src/supermarket/engines/fieri/vendor/bundle
 
 env:
   global:
@@ -32,7 +33,7 @@ matrix:
 
     # Supermarket Spec
     - env:
-        - COMPONENT=supermarket
+        - NAME=supermarket
       addons:
         postgresql: '9.3'
         apt:
@@ -44,15 +45,16 @@ matrix:
         - redis-server
         - postgresql
       before_install:
-        - cd $TRAVIS_BUILD_DIR/src/$COMPONENT && bundle config build.nokogiri --use-system-libraries
+        - cd src/supermarket
+        - bundle config build.nokogiri --use-system-libraries
       before_script:
-        - cd $TRAVIS_BUILD_DIR/src/$COMPONENT && bundle exec rake $COMPONENT:travis:before_script
+        - bundle exec rake supermarket:travis:before_script
       script:
-        - cd $TRAVIS_BUILD_DIR/src/$COMPONENT && bundle exec rake $COMPONENT:travis:script
+        - bundle exec rake supermarket:travis:script
 
     # Fieri Spec
     - env:
-        - COMPONENT=fieri
+        - NAME=fieri
       addons:
         postgresql: '9.3'
         apt:
@@ -64,11 +66,12 @@ matrix:
         - redis-server
         - postgresql
       before_install:
-        - cd $TRAVIS_BUILD_DIR/src/$COMPONENT && bundle config build.nokogiri --use-system-libraries
+        - cd src/supermarket/engines/fieri
+        - bundle config build.nokogiri --use-system-libraries
       before_script:
-        - cd $TRAVIS_BUILD_DIR/src/$COMPONENT && bundle exec rake $COMPONENT:travis:before_script
+        - bundle exec rake fieri:travis:before_script
       script:
-        - cd $TRAVIS_BUILD_DIR/src/$COMPONENT && bundle exec rake $COMPONENT:travis:script
+        - bundle exec rake fieri:travis:script
 
     # Terraform Lint
     - env:
